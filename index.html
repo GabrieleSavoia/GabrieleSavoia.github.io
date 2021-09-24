@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="en">
+	<head>
+
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- fontawesome -->
+        <script src="https://kit.fontawesome.com/f48ce74c0e.js" crossorigin="anonymous"></script>
+
+        <!-- Fancybox -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+
+        <!-- Bootstrap CSS -->
+        <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+            integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+            crossorigin="anonymous">
+
+
+        <!-- CSS modificato -->
+        <link rel="stylesheet" href="css/style.css">
+
+	    <title>QREMIND</title>
+	</head>
+	<body>
+
+
+        <div class="main-container">
+
+            <!-- Sidebar -->
+            <nav class="sidebar-container">
+                <ul class="sidebar-nav">
+                    <li class="sidebar-brand">
+                        <div class="container">
+                            <div class="d-flex justify-content-between">
+                                <a href="#">QRemind</a>
+                                <a href="#close-menu-toggle" id="close-menu-toggle" class="d-md-none button-close"><i class="fas fa-times"></i></a>
+                            </div>
+                        </div>
+                    </li>
+
+                    <hr class="divider-menu" />
+
+                    <li>
+                        <a class="{% block gallery_status %}{% endblock %}" href="#">Gallery</a>
+                    </li>
+                    <li>
+                        <a class="{% block edit_gallery_status %}{% endblock %}" href="#">Edit gallery</a>
+                    </li>
+                    <li>
+                        <a class="{% block settings_status %}{% endblock %}" href="#">Settings</a>
+                    </li>
+                    <li>
+                        <a class="{% block soundtrack_status %}{% endblock %}" href="#">Soundtrack</a>
+                    </li>
+                    <li>
+                        <a class="{% block contact_status %}{% endblock %}" href="#">Contact</a>
+                    </li>
+
+                    <hr class="divider-menu" />
+
+                    <li>
+                        <div class="d-flex justify-content-center">
+                            <a href="https://www.instagram.com/qremind/" target="_blank"><i class="fab fa-instagram icons"></i></a>
+                            <a href="https://www.facebook.com/QRemind/?modal=admin_todo_tour" target="_blank"><i class="fab fa-facebook-f icons"></i></a>
+                            <a href="https://twitter.com/QRemind" target="_blank"><i class="fab fa-twitter icons"></i></a>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+
+
+            <div class="d-flex justify-content-between d-md-none" style="background-color: rgba( 10, 10, 10, 0.9 ); position: absolute; top: 0; left: 0; z-index: 5; width: 100%;">
+                <a href="#menu-toggle" id="menu-toggle" class="d-md-none"><i class="fas fa-bars menu-bars"></i></a>
+                <h1 class="d-md-none brand-title">QRemind</h1>
+            </div>
+
+
+            <!-- Page Content -->
+            <div class="page-content-container" style="height: 100vh;" id="photos-container">
+
+                <script type="module">
+
+                    import * as THREE from './build/three.module.js';
+                    import { MapControls } from './controls/OrbitControls.js';
+
+                    let camera, controls, scene, renderer;
+
+                    let panelsObject = [];
+
+                    const photosContainer = document.getElementById( "photos-container" );
+
+                    init();
+                    animate();
+
+                    function init() {
+
+                        scene = new THREE.Scene();
+                        scene.background = new THREE.Color( 0x000000 );
+
+                        renderer = new THREE.WebGLRenderer( { antialias: true } );
+                        renderer.setPixelRatio( window.devicePixelRatio );
+                        renderer.setSize( $(photosContainer).width(), $(photosContainer).height() );
+                        photosContainer.appendChild( renderer.domElement );
+
+                        camera = new THREE.PerspectiveCamera( 60, $(photosContainer).width() / $(photosContainer).height(), 1, 25000 );
+                        camera.position.set( 0, 0, 90 );
+
+                        // controls
+
+                        controls = new MapControls( camera, renderer.domElement );
+
+                        controls.enableDamping = true;
+                        controls.dampingFactor = 0.05;
+
+                        controls.screenSpacePanning = true;
+
+                        controls.enableRotate = false;
+                        controls.enableZoom = true;
+
+                        controls.minZoom = 50;
+                        controls.maxZoom = 250;
+
+                        controls.minDistance = 50;
+                        controls.maxDistance = 250;
+
+                        // world
+
+                        function createPthoto( url, x, y, z ) {
+
+                            // panel
+
+                            var panelGeometry = new THREE.PlaneGeometry( 1, 1, 1 );
+                            var panelMaterial = new THREE.MeshBasicMaterial( { color: 0x0a0a0a } );
+
+                            var panelMesh = new THREE.Mesh( panelGeometry, panelMaterial );
+                            panelMesh.position.x = x;
+                            panelMesh.position.y = y;
+                            panelMesh.position.z = z-1;
+                            panelMesh.scale.x = 45;
+                            panelMesh.scale.y = 55;
+                            panelMesh.scale.z = 0;
+                            panelMesh.updateMatrix();
+                            panelMesh.matrixAutoUpdate = false;
+
+                            scene.add( panelMesh );
+
+                            panelsObject.push( panelMesh );
+
+                            // photo
+
+                            var photoGeometry = new THREE.PlaneGeometry( 1, 1, 1 );
+                            var photoTexture = new THREE.TextureLoader().load( url );
+                            photoTexture.anisotropy = renderer.getMaxAnisotropy();
+
+                            var photoMaterial = new THREE.MeshBasicMaterial( { map: photoTexture } );
+
+                            var photoMesh = new THREE.Mesh( photoGeometry, photoMaterial );
+                            photoMesh.position.x = x;
+                            photoMesh.position.y = y+5;
+                            photoMesh.position.z = z;
+                            photoMesh.scale.x = 40;
+                            photoMesh.scale.y = 40;
+                            photoMesh.scale.z = 0;
+                            photoMesh.updateMatrix();
+                            photoMesh.matrixAutoUpdate = false;
+                            scene.add( photoMesh );
+
+                        }
+
+                        var photosPahArray = [ 'images/test1.jpg', 'images/test2.jpg', 'images/test3.jpg', 'images/test4.jpg', 'images/test5.jpg', 'images/test6.jpg', 'images/test7.jpg', 'images/test8.jpg', 'images/test9.jpg', 'images/test10.jpg', 'images/test11.jpg', 'images/test12.jpg' ]
+
+                        var xCoord = -25;
+                        var yCoord = 30;
+
+                        for ( var x=0; x < photosPahArray.length; x++ ) {
+
+                            createPthoto( photosPahArray[ x ], xCoord, yCoord, 0 );
+
+                            if ( x%2 ) {
+
+                                xCoord = -25;
+                                yCoord -=60;
+
+                            } else {
+
+                                xCoord += 50;
+
+                            }
+
+                        }
+
+                        // lights
+
+                        const dirLight1 = new THREE.DirectionalLight( 0xffffff );
+                        dirLight1.position.set( 1, 1, 1 );
+                        scene.add( dirLight1 );
+
+                        const dirLight2 = new THREE.DirectionalLight( 0x002288 );
+                        dirLight2.position.set( - 1, - 1, - 1 );
+                        scene.add( dirLight2 );
+
+                        const ambientLight = new THREE.AmbientLight( 0x222222 );
+                        scene.add( ambientLight );
+
+                        //
+
+                        window.addEventListener( 'resize', onWindowResize );
+
+                    }
+
+                    function onWindowResize() {
+
+                        camera.aspect = $(photosContainer).width() / $(photosContainer).height();
+                        camera.updateProjectionMatrix();
+
+                        renderer.setSize( $(photosContainer).width(), $(photosContainer).height() );
+
+                    }
+
+                    function animate() {
+
+                        requestAnimationFrame( animate );
+
+                        controls.update(); // only required if controls.enableDamping = true, or if controls.autoRotate = true
+
+                        render();
+
+                    }
+
+                    function render() {
+
+                        renderer.render( scene, camera );
+
+                    }
+
+
+                    // events
+
+                    var raycaster = new THREE.Raycaster();
+                    var mouse = new THREE.Vector2();
+
+                    var onDownPosition = new THREE.Vector2();
+                    var onUpPosition = new THREE.Vector2();
+
+                    function getIntersects( point, panelsObject ) {
+
+                        mouse.set( ( point.x * 2 ) - 1, - ( point.y * 2 ) + 1 );
+
+                        raycaster.setFromCamera( mouse, camera );
+
+                        return raycaster.intersectObjects( panelsObject );
+
+                    }
+
+                    function getMousePosition( dom, x, y ) {
+
+                        var rect = dom.getBoundingClientRect();
+                        return [ ( x - rect.left ) / rect.width, ( y - rect.top ) / rect.height ];
+
+                    }
+
+                    function handleClick() {
+
+                        if ( onDownPosition.distanceTo( onUpPosition ) === 0 ) {
+
+                            var intersects = getIntersects( onUpPosition, panelsObject );
+
+                            alert( 'premuto' );
+
+                            if ( intersects.length > 0 ) {
+
+                                var object = intersects[ 0 ].object;
+
+                                console.log( object );
+
+                            }
+
+                            render();
+
+                        }
+
+                    }
+
+                    
+                    function onMouseDown( event ) {
+
+                        var array = getMousePosition( photosContainer, event.clientX, event.clientY );
+                        onDownPosition.fromArray( array );
+
+                        photosContainer.addEventListener( 'pointerup', onMouseUp, false );
+
+                    }
+
+                    function onMouseUp( event ) {
+
+                        var array = getMousePosition( photosContainer, event.clientX, event.clientY );
+                        onUpPosition.fromArray( array );
+
+                        handleClick();
+
+                        photosContainer.removeEventListener( 'pointerup', onMouseUp, false );
+
+                    }
+                    
+                    /*
+                    function onTouchStart( event ) {
+
+                        var touch = event.changedTouches[ 0 ];
+
+                        var array = getMousePosition( photosContainer, touch.clientX, touch.clientY );
+                        onDownPosition.fromArray( array );
+
+                        document.addEventListener( 'touchend', onTouchEnd, false );
+
+                    }
+
+                    function onTouchEnd( event ) {
+
+                        var touch = event.changedTouches[ 0 ];
+
+                        var array = getMousePosition( photosContainer, touch.clientX, touch.clientY );
+                        onUpPosition.fromArray( array );
+
+                        handleClick();
+
+                        document.removeEventListener( 'touchend', onTouchEnd, false );
+
+                    }
+                    */
+
+                    photosContainer.addEventListener( 'pointerdown', onMouseDown, false );
+	                //photosContainer.addEventListener( 'touchstart', onTouchStart, false );
+        
+                </script>
+
+            </div>
+
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <!-- Optional JavaScript -->
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+            crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+            crossorigin="anonymous"></script>
+
+        <!-- Fancybox -->
+        <script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+
+
+         <!-- Menu Toggle Script -->
+        <script>
+	        $("#menu-toggle").click(function(e) {
+	            e.preventDefault();
+	            $(".main-container").toggleClass("toggled");
+	        });
+
+	        $("#close-menu-toggle").click(function(e) {
+	            e.preventDefault();
+	            $(".main-container").toggleClass("toggled");
+	        });
+        </script>
+
+
+	</body>
+</html>
