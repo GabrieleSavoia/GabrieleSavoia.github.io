@@ -1,0 +1,325 @@
+
+/* VARIABILI GLOBALI */
+/*********************************************************************************************************************/
+
+/* variabili globali */
+:root {
+    /*--custom-dark-gray : #121212;*/
+    --custom-dark-gray : rgba( 10, 10, 10 );
+    --main-color : rgb(248, 109, 90);
+    --main-color-button-click : rgb(204, 90, 76);
+    --custom-black : #040404;
+    --main-text-color : white;
+    --main-font : Copperplate;
+}
+
+
+/* PAGE GENERAL STYLE */
+/*********************************************************************************************************************/
+
+/* Background sfondo della pagina */
+body {
+    background-color: var(--custom-black);
+}
+
+/* classe per il separator */
+hr.divider {
+    width: 80%;
+    height:1px;
+    background-color: var(--main-color);
+}
+
+.custom-black {
+    background-color: var(--custom-black);
+}
+
+.brand-title {
+    color: var(--main-text-color);
+    font-family: Copperplate;
+    font-size: 30px;
+}
+    .brand-title:hover {
+        text-decoration: none;
+        color: var(--main-text-color);
+
+    }
+    .brand-title:active,
+    .brand-title:focus {
+        text-decoration: none;
+    }
+
+.title-page {
+    color: var(--main-text-color);
+}
+
+.paragraph {
+    color: var(--main-text-color);
+}
+
+.link {
+    color: var(--main-color);
+}
+
+.link:hover {
+    color: var(--main-color);
+}
+
+.pressed {
+    color: var(--main-color);
+}
+
+
+
+
+/* BUTTONS STYLE */
+/*********************************************************************************************************************/
+
+.btn-default
+{
+    background-color: var(--custom-dark-gray);
+    color: var(--main-text-color);
+    border-color: var(--main-color);
+    margin: 10px;
+    border-radius: 25px;
+}
+
+.btn-default:hover {
+    background-color: var(--main-color);
+    border-color: var(--main-color);
+    color: var(--main-text-color);
+ }
+
+.btn-default:focus {
+    background-color: var(--main-color);
+    border-color: var(--main-color);
+    color: var(--main-text-color);
+}
+
+.btn-default:active {
+    background-color: var(--main-color-button-click);
+}
+
+.btn-default.active, .open .dropdown-toggle.btn-default {
+    background-color: white;
+}
+
+
+
+
+
+/* MAIN-CONTAINER */
+/*********************************************************************************************************************/
+
+.main-container {               /* Container complessivo della pagina. */
+    -webkit-transition: all 0.0s ease;
+    -moz-transition: all 0.0s ease;
+    -o-transition: all 0.0s ease;
+    transition: all 0.0s ease;
+}
+
+/* Regole da 768px in su */
+@media(min-width:767.98px) {
+    .main-container {
+        padding-left: 300px;        /* Spazio per sidebar-container FISSA a sx quando schermo > 768 */
+    }
+
+    .main-container.toggled {
+        padding-left: 300px;        /* Necessario quando da mobile apro sidebar e poi passo a desktop */
+    }
+}
+
+/* Regole da 768px in giu */
+@media(max-width:767.98px) {
+    .main-container.toggled {
+        padding-left: 0;       /* Tolgo spazio a sidebar-container */
+    }
+}
+
+
+
+
+/* PAGE CONTENT CONTAINER */
+/*********************************************************************************************************************/
+
+.page-content-container {
+    padding: 0px;           /* Cornice page-content */
+    position: relative;
+}
+
+/* Regole da 768px in su */
+@media(min-width:767.98px) {
+    /*
+    .page-content-container {
+        padding: 0px;               Cornice page-content
+        position: relative;         Per impaginazione corretta foto
+    }
+    .main-container.toggled .page-content-container {
+        padding: 0px;
+        position: relative;
+    }
+    */
+}
+
+/* Regole da 768px in giu */
+@media(max-width:767.98px) {
+    /*
+    .page-content-container {
+        padding: 0px;            Cornice page-content
+        position: relative;
+    }
+    .main-container.toggled .page-content-container {
+        position: relative;
+        margin-right: 0;
+    }
+     */
+}
+
+
+
+
+/* SIDEBAR CONTAINER*/
+/*********************************************************************************************************************/
+
+/* Guardare i media per le dimensioni */
+.sidebar-container {        /* Container per il navbar */
+    z-index: 10;             /* Sovrappone lo sfondo */
+    position: fixed;
+    left: 0%;               /* posizionamento sx */
+    height: 100%;
+    overflow-y: auto;       /* Mette scrollPane se necessario */
+    background: var(--custom-dark-gray);
+    -webkit-transition: all 0.21s ease;
+    -moz-transition: all 0.1s ease;
+    -o-transition: all 0.1s ease;
+    transition: all 0.1s ease;
+}
+
+/* Regole da 768px in su */
+@media(min-width:767.98px) {
+    .sidebar-container {
+        width: 300px;                /* Grandezza sidebar quando schermo > 768 */
+    }
+
+    .main-container.toggled .sidebar-container {        /* Necessario quando da mobile apro sidebar e poi passo a desktop */
+        width: 300px;
+    }
+}
+
+/* Regole da 768px in giu */
+@media(max-width:767.98px) {
+    .sidebar-container {       /* Nascondo sidebar-container */
+        width: 0%;
+    }
+
+    .main-container.toggled .sidebar-container {   /* Apro sidebar-container al 100 % */
+        width: 100%;
+    }
+}
+
+
+/* SIDEBAR NAV */
+/*********************************************************************************************************************/
+
+.sidebar-nav {          /* La navbar prende le dim in largezza del padre (sidebar-container) */
+    position: absolute;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/* indentazione parole del menu */
+.sidebar-nav li {
+    line-height: 35px;
+    text-decoration: none;
+    list-style: none;
+}
+
+.sidebar-nav li a {
+    display: inline-block;
+    text-decoration: none; 
+    width: 100%;
+
+    color: var(--main-text-color);
+}
+    .sidebar-nav li a:hover {
+        text-decoration: none;
+        color: var(--main-color);
+    }
+    .sidebar-nav li a:active,
+    .sidebar-nav li a:focus {
+        text-decoration: none;
+    }
+    .sidebar-nav li .selected {
+
+        text-decoration: none;
+        color: var( --main-color );
+        /*
+        border-left: solid var(--main-color);
+        padding-left: 5px;
+        */
+    }
+
+
+
+/* Icona per aprire o chiudere il menu */
+.toggle-button {
+    font-size:30px;
+    color: var(--main-text-color);
+    margin-left: 10px;
+}
+    .toggle-button:hover {
+        text-decoration: none;
+        color: var(--main-text-color);
+    }
+    .toggle-button:active,
+    .toggle-button:focus {
+        text-decoration: none;
+    }
+
+/*
+.profile{
+    padding: 10px;
+    text-align: center;
+}
+.profile .profileName {
+    line-height:35px;
+    margin: 0;
+    color: var(--main-text-color);
+}
+.profile a {
+    background-color: transparent;
+    border-color: transparent;
+    font-size: 40px;
+    display: block;
+    border-radius: 50%;
+    margin: 0 auto;
+}
+*/
+
+
+/* Le icone all'interno del navbar vengono modificati. In questo caso le icone di instagram, facebook e twitter*/
+.icons {
+    background-color: transparent;
+    border-color: transparent;
+    color: var(--main-text-color);
+    font-size: 20px;
+}
+
+/* Hover delle icone (bottoni) */
+.icons:hover {
+    color: var(--main-color);
+}
+
+/* classe per il separator */
+hr.divider-menu {
+    width: 100%;
+    background-color: var(--main-color);
+    margin: 0px;
+}
+
+.panel-sidebar {
+
+    margin: 15px;
+
+}
